@@ -13,6 +13,10 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: '3.x'  # Specify the Python version you need
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt  # Install required packages
+
 
       - name: List directory contents
         run: ls -al  # This helps verify your directory structure
