@@ -12,12 +12,15 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.x'  # Specify the desired Python version
-      
+          python-version: '3.x'
+
       - name: Build your project
         run: |
-          cd ./path/to/your/workdir  # Change to the desired working directory
-          # Add your build commands here
+          cd ./path/to/your/workdir  # Change to your working directory
+          # Your build commands here
+
+      - name: List files in bin directory
+        run: ls -al ./bin  # Debugging step
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
