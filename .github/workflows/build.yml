@@ -19,7 +19,7 @@ jobs:
 
       - name: Run Python script
         run: |
-          python project1/main.py  # Adjust to run your main.py file
+            main.py  # Adjust to run your main.py file
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
