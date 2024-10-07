@@ -1,0 +1,7 @@
+joblib
+numpy
+sounddevice
+kivymd
+kivy
+librosa
+scipy
