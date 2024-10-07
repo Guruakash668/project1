@@ -17,7 +17,7 @@ jobs:
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y portaudio19-dev  # Install PortAudio
+          sudo apt-get install -y portaudio19-dev libmtdev-dev xvfb  # Install PortAudio and MTDev libraries, along with Xvfb
 
       - name: Install dependencies
         run: |
@@ -26,8 +26,10 @@ jobs:
       - name: List directory contents
         run: ls -al  # This helps verify your directory structure
 
-      - name: Run Python script
+      - name: Run Kivy application in Xvfb
         run: |
+          Xvfb :99 -screen 0 1920x1080x24 &  # Start Xvfb
+          export DISPLAY=:99  # Set display to Xvfb
           python main.py  # Run your main.py file
 
       - name: Upload artifacts
