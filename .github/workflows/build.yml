@@ -13,6 +13,12 @@ jobs:
         with:
           python-version: '3.9'
 
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -23,8 +29,22 @@ jobs:
           pip install --upgrade Cython==0.29.33 buildozer
           sudo apt-get install -y libssl-dev
 
+      - name: Install Android SDK
+        run: |
+          sudo apt-get install -y wget unzip
+          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
+          unzip commandlinetools-linux-8092744_latest.zip
+          mkdir -p android-sdk/cmdline-tools
+          mv cmdline-tools android-sdk/cmdline-tools/latest
+          export ANDROID_SDK_ROOT=$PWD/android-sdk
+          export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+
       - name: Build APK
         run: |
+          export ANDROID_SDK_ROOT=$PWD/android-sdk
+          export PATH=$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools
           buildozer android debug
 
       - name: Upload APK
