@@ -3,7 +3,7 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-     steps:
+    steps:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
@@ -46,4 +46,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: apk-files
-          path: ./bin/*.apk
+          path: bin/*.apk
