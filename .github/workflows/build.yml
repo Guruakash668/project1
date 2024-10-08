@@ -49,22 +49,6 @@ jobs:
           work-dir: . # directory where your main.py file rests
           spec-file: buildozer.spec
           main-file: main.py
-
-      - name: Build APK
-        uses: digreatbrian/buildozer-action@v2
-        with:
-          buildozer-cmd: buildozer -v android debug
-          work-dir: . # directory where your main.py file rests
-          spec-file: buildozer.spec
-          main-file: main.py
-
-      - name: Build APK
-        uses: digreatbrian/buildozer-action@v2
-        with:
-          buildozer-cmd: buildozer -v android debug
-          work-dir: . # directory where your main.py file rests
-          spec-file: buildozer.spec
-          main-file: main.py
           
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
