@@ -41,7 +41,18 @@ jobs:
       - name: Install aidl
         run: |
           sudo apt-get update
-          sudo apt-get install -y android-sdk-platform-tools
+          sudo apt-get install -y openjdk-8-jdk
+          sudo apt-get install -y android-sdk-build-tools
+          sudo apt-get install -y android-sdk-platform-tools-common
+          sudo apt-get install -y android-sdk-libs
+
+      - name: Build APK
+        uses: digreatbrian/buildozer-action@v2
+        with:
+          buildozer-cmd: buildozer -v android debug
+          work-dir: . # directory where your main.py file rests
+          spec-file: buildozer.spec
+          main-file: main.py
 
       - name: Build APK
         uses: digreatbrian/buildozer-action@v2
