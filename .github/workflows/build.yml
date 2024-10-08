@@ -40,7 +40,7 @@ jobs:
       - name: Build APK file using Kivy
         run: |
           buildozer android debug deploy run
-        working-directory: android
+        working-directory: buildozer.spec
         id: buildozer
 
       - name: List directory contents
