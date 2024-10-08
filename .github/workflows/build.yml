@@ -39,8 +39,9 @@ jobs:
 
       - name: Build APK file using Kivy
         run: |
-          buildozer android debug deploy run
-        working-directory: buildozer.spec
+          pip install buildozer
+          buildozer android debug
+        working-directory: .
         id: buildozer
 
       - name: List directory contents
@@ -56,4 +57,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: apk-files
-          path: ${{ steps.buildozer.outputs.build_dir }}/bin/*.apk
+          path: ./bin/*.apk
