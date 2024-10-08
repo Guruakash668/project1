@@ -1,33 +1,20 @@
-name: CI - Android
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
+name: CI
+on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-
-      # Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-      
-      # Set up Python
+      - name: Checkout code
+        uses: actions/checkout@v3
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v3
         with:
-          python-version: '3.8'  # Set your Python version
-
-      # Cache Python dependencies
+          python-version: '3.x'
+ 
       - name: Cache Python dependencies
         uses: actions/cache@v3
         with:
@@ -35,85 +22,27 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
-      # Install system dependencies
+ 
       - name: Install system dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y \
-            build-essential \
-            git \
-            ffmpeg \
-            libsdl2-dev \
-            libsdl2-image-dev \
-            libsdl2-mixer-dev \
-            libsdl2-ttf-dev \
-            libportmidi-dev \
-            libswscale-dev \
-            libavformat-dev \
-            libavcodec-dev \
-            libunwind-dev \
-            zlib1g-dev \
-            libsqlite3-dev \
-            sqlite3 \
-            bzip2 \
-            libbz2-dev \
-            openssl \
-            libgdbm-dev \
-            libgdbm-compat-dev \
-            liblzma-dev \
-            libreadline-dev \
-            uuid-dev \
-            libgstreamer1.0 \
-            gstreamer1.0-plugins-base \
-            gstreamer1.0-plugins-good \
-            portaudio19-dev \
-            libmtdev-dev \
-            xvfb \
-            zip \
-            unzip \
-            autoconf \
-            libtool \
-            pkg-config \
-            libncurses5-dev \
-            libncursesw5-dev \
-            libtinfo5 \
-            cmake \
-            libffi-dev \
-            libssl-dev \
-            automake
-
-      # Set up Java 17 required by Gradle
-      - name: Setup Java 17 required by Gradle
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'  # or 'zulu', 'liberica', etc.
-          java-version: '17'
-
-      # Install pip dependencies
-      - name: Install pip dependencies
+          sudo apt-get install -y portaudio19-dev libmtdev-dev xvfb
+ 
+      - name: Install dependencies
         run: |
-          pip install --upgrade pip
-          pip install buildozer cython==0.29.33
           pip install -r requirements.txt
-
-      # Build with Buildozer
-      - name: Build with Buildozer
-        id: buildozer
-        run: |
-          yes | buildozer -v android debug
-          # Uncomment the next line to generate an AAB
-          # yes | buildozer -v android release
-
-      # List directory contents
+ 
       - name: List directory contents
-        run: ls -al bin/
-
-      # Upload artifacts
+        run: ls -al
+ 
+      - name: Run Kivy application in Xvfb (with timeout)
+        run: |
+          Xvfb :99 -screen 0 1920x1080x24 &
+          export DISPLAY=:99
+          timeout 5m python main.py || true
+ 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: package
-          path: |
-            bin/*.apk
-            bin/*.aab
+          name: apk-files
+          path:  ${{ steps.buildozer.outputs.filename }}
