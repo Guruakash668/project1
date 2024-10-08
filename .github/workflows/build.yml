@@ -1,20 +1,26 @@
 name: CI
-on: [push]
+
+on:
+  push:
+    branches: [ main ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-      - name: Checkout code
-        uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.x'
- 
+
       - name: Cache Python dependencies
         uses: actions/cache@v3
         with:
@@ -22,27 +28,26 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
- 
+
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y portaudio19-dev libmtdev-dev xvfb
- 
+
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
- 
-      - name: List directory contents
-        run: ls -al
- 
-      - name: Run Kivy application in Xvfb (with timeout)
-        run: |
-          Xvfb :99 -screen 0 1920x1080x24 &
-          export DISPLAY=:99
-          timeout 5m python main.py || true
- 
+
+      - name: Build APK
+        uses: digreatbrian/buildozer-action@v2
+        with:
+          buildozer-cmd: buildozer -v android debug
+          work-dir: . # directory where your main.py file rests
+          spec-file: buildozer.spec
+          main-file: main.py
+          
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: apk-files
-          path:  ${{ steps.buildozer.outputs.filename }}
+          path: ./bin/*.apk
