@@ -39,7 +39,6 @@ jobs:
 
       - name: Build APK file using Kivy
         run: |
-          buildozer init
           buildozer android debug deploy run
         working-directory: android
         id: buildozer
