@@ -1,26 +1,24 @@
 name: CI
-
 on:
   push:
     branches: [ main ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+      
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
-
+      
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.x'
-
+      
       - name: Cache Python dependencies
         uses: actions/cache@v3
         with:
@@ -28,28 +26,41 @@ jobs:
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
+      
       - name: Install system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y portaudio19-dev libmtdev-dev xvfb
-
-      - name: Install dependencies
+      
+      - name: Install Python dependencies
         run: |
           pip install -r requirements.txt
-
-      - name: Install aidl
-        run: |
-          sudo apt-get install -y aidl
-
-      - name: Build APK
-        uses: digreatbrian/buildozer-action@v2
+      
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
         with:
-          buildozer-cmd: buildozer -v android debug
-          work-dir: . # directory where your main.py file rests
-          spec-file: buildozer.spec
-          main-file: main.py
-          
+          java-version: '11'
+          distribution: 'temurin'
+      
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+      
+      - name: Install Android SDK components
+        run: |
+          sdkmanager "platform-tools" "build-tools;30.0.3" "platforms;android-30"
+      
+      - name: Add Android SDK tools to PATH
+        run: |
+          echo "$ANDROID_HOME/tools" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/tools/bin" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+      
+      - name: Build APK
+        uses: ArtemSBulgakov/buildozer-action@v1
+        with:
+          command: buildozer android debug
+          buildozer_version: stable
+      
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
