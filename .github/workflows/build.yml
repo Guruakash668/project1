@@ -66,14 +66,15 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: Prepare Buildozer
+      - name: Update buildozer.spec
         run: |
-          buildozer init
-          sed -i 's/^android.sdk_path =.*/android.sdk_path = \/usr\/local\/android-sdk/' buildozer.spec
-          sed -i 's/^android.ndk_path =.*/android.ndk_path = \/usr\/local\/android-sdk\/ndk\/25.2.9519653/' buildozer.spec
+          sed -i 's|^android.sdk_path =.*|android.sdk_path = /usr/local/android-sdk|' buildozer.spec
+          sed -i 's|^android.ndk_path =.*|android.ndk_path = /usr/local/android-sdk/ndk/25.2.9519653|' buildozer.spec
+          sed -i 's|^android.accept_sdk_license =.*|android.accept_sdk_license = True|' buildozer.spec
+          sed -i 's|^p4a.branch =.*|p4a.branch = develop|' buildozer.spec
 
       - name: Build APK
-        run: buildozer -v android debug
+        run: buildozer android debug
 
       - name: Check for APK files
         run: |
