@@ -35,14 +35,29 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
+      - name: Create license acceptance script
+        run: |
+          cat << EOF > accept_licenses.sh
+          #!/bin/bash
+          export ANDROID_HOME=\$HOME/.buildozer/android/platform/android-sdk
+          export PATH=\$PATH:\$ANDROID_HOME/tools:\$ANDROID_HOME/platform-tools
+
+          yes | \$ANDROID_HOME/tools/bin/sdkmanager --licenses
+          yes | \$ANDROID_HOME/tools/bin/sdkmanager --update
+          yes | \$ANDROID_HOME/tools/bin/sdkmanager "platforms;android-30" "build-tools;30.0.3" "ndk;25.2.9519653" "cmake;3.22.1"
+          EOF
+          chmod +x accept_licenses.sh
+
       - name: Update buildozer.spec
         run: |
           sed -i 's|^android.accept_sdk_license =.*|android.accept_sdk_license = True|' buildozer.spec
           sed -i 's|^p4a.branch =.*|p4a.branch = develop|' buildozer.spec
-          echo "android.setup_sdk_packages = platform-tools,platforms;android-30,build-tools;30.0.3,ndk;25.2.9519653,cmake;3.22.1" >> buildozer.spec
+          echo "android.build_tools_version = 30.0.3" >> buildozer.spec
 
       - name: Build APK
-        run: buildozer -v android debug
+        run: |
+          ./accept_licenses.sh
+          buildozer -v android debug
 
       - name: Check for APK files
         run: |
