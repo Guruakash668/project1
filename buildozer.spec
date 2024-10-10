@@ -7,16 +7,16 @@ title = Engine Noise
 package.name = engine noise
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.ouchentech
+package.domain = org.examples
 
 # (str) Source code where the main.py live
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,ttf,wav,mp3,pkl
+source.include_exts = py,png,jpg,atlas,pkl,wav,mp3,json
 
 # (list) List of inclusions using pattern matching
-source.include_patterns = assets/*,images/*.jpg
+source.include_patterns = assets/*,images/*.jpg, user_data.json, random_forest_model.pkl
 
 # (list) Source files to exclude (let empty to not exclude anything)
 #source.exclude_exts = spec
@@ -37,7 +37,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy, https://github.com/kivymd/KivyMD/archive/master.zip, materialyoucolor, exceptiongroup, asyncgui, asynckivy
+requirements = python3,kivy==2.1.0,kivymd==1.1.0,numpy,sounddevice,librosa,scipy,joblib, https://github.com/kivymd/KivyMD/archive/master.zip, materialyoucolor, exceptiongroup, asyncgui, asynckivy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -95,7 +95,7 @@ android.presplash_color = #F6F6F6
 
 # (list) Permissions
 # (See https://python-for-android.readthedocs.io/en/latest/buildoptions/#build-options-1 for all the supported syntaxes and properties)
-android.permissions = android.permission.INTERNET, (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18), (name=android.permission.READ_EXTERNAL_STORAGE)
+android.permissions = android.permission.INTERNET, (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18),(name=android.permission.READ_EXTERNAL_STORAGE),RECORD_AUDIO
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
