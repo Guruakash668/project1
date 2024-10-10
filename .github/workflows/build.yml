@@ -32,6 +32,10 @@ jobs:
                                   build-essential libssl-dev libffi-dev \
                                   python3-venv git libmtdev-dev xvfb \
                                   zlib1g-dev libglu1-mesa
+      - name: Set Environment Variables
+        run: |
+          echo "export MY_ENV_VAR='some_value'" >> $GITHUB_ENV
+
 
       - name: Install Buildozer
         run: |
