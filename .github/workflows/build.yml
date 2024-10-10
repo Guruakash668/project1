@@ -15,7 +15,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
-          python-version: '3.11'  # Change to 3.11 if needed
+          python-version: '3.11'
 
       - name: Cache Python dependencies
         uses: actions/cache@v3
@@ -32,7 +32,11 @@ jobs:
                                   build-essential libssl-dev libffi-dev \
                                   python3-venv git libmtdev-dev xvfb \
                                   zlib1g-dev libglu1-mesa python3-distutils
-                                  
+
+      - name: Install Cython
+        run: |
+          pip install Cython  # Install Cython explicitly
+
       - name: Set Environment Variables
         run: |
           echo "export MY_ENV_VAR='some_value'" >> $GITHUB_ENV
