@@ -37,6 +37,17 @@ jobs:
         run: |
           pip install Cython  # Install Cython explicitly
 
+      - name: Set up Android SDK
+        run: |
+          sudo apt-get install -y wget unzip
+          mkdir -p $HOME/android-sdk
+          cd $HOME/android-sdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
+          unzip commandlinetools-linux-8092744_latest.zip
+          yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk --install "platform-tools" "platforms;android-30" "build-tools;30.0.3" "extras;google;m2repository" "extras;android;m2repository"
+          echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "export PATH=\$PATH:\$ANDROID_HOME/cmdline-tools/latest/bin:\$ANDROID_HOME/platform-tools" >> $GITHUB_ENV
+
       - name: Set Environment Variables
         run: |
           echo "export MY_ENV_VAR='some_value'" >> $GITHUB_ENV
