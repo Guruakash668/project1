@@ -12,12 +12,10 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.11'
-
       - name: Install system dependencies
         run: |
           sudo apt-get update
@@ -25,34 +23,26 @@ jobs:
                                   build-essential libssl-dev libffi-dev \
                                   python3-venv git libmtdev-dev xvfb \
                                   zlib1g-dev libglu1-mesa python3-distutils
-
       - name: Install Cython
         run: pip install Cython
-
       - name: Install Buildozer
         run: pip install --upgrade buildozer
-
       - name: Install Python dependencies
         run: pip install -r requirements.txt
-
       - name: Update buildozer.spec
         run: |
           sed -i 's|^android.accept_sdk_license =.*|android.accept_sdk_license = True|' buildozer.spec
           sed -i 's|^p4a.branch =.*|p4a.branch = develop|' buildozer.spec
           echo "android.build_tools_version = 30.0.3" >> buildozer.spec
-
       - name: Download Android SDK
         run: buildozer android debug deploy run logcat > /dev/null
-
       - name: Accept licenses
         run: |
           yes | $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager --licenses
           yes | $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager --update
           yes | $HOME/.buildozer/android/platform/android-sdk/tools/bin/sdkmanager "platforms;android-30" "build-tools;30.0.3" "ndk;25.2.9519653" "cmake;3.22.1"
-
       - name: Build APK
         run: buildozer -v android debug
-
       - name: Check for APK files
         run: |
           if ls bin/*.apk 1> /dev/null 2>&1; then
@@ -61,7 +51,6 @@ jobs:
             echo "No APK files found."
             exit 1
           fi
-
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
