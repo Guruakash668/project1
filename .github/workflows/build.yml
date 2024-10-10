@@ -40,17 +40,17 @@ jobs:
       - name: Set up Android SDK
         run: |
           sudo apt-get install -y wget unzip
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
-          unzip commandlinetools-linux-8092744_latest.zip
-          sudo mkdir -p /usr/local/android-sdk
-          sudo mv cmdline-tools /usr/local/android-sdk/
+          wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip
+          unzip commandlinetools-linux-10406996_latest.zip
+          sudo mkdir -p /usr/local/android-sdk/cmdline-tools
+          sudo mv cmdline-tools /usr/local/android-sdk/cmdline-tools/latest
           echo "ANDROID_HOME=/usr/local/android-sdk" >> $GITHUB_ENV
-          echo "PATH=$PATH:/usr/local/android-sdk/cmdline-tools/bin:/usr/local/android-sdk/platform-tools" >> $GITHUB_ENV
+          echo "PATH=$PATH:/usr/local/android-sdk/cmdline-tools/latest/bin:/usr/local/android-sdk/platform-tools" >> $GITHUB_ENV
 
       - name: Install Android SDK components
         run: |
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+          yes | /usr/local/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=/usr/local/android-sdk --licenses
+          /usr/local/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=/usr/local/android-sdk "platform-tools" "platforms;android-30" "build-tools;30.0.3"
 
       - name: Set Environment Variables
         run: |
